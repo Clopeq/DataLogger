@@ -20,6 +20,7 @@ app_thread = threading.Thread(target=web_server)
 app_thread.daemon = True
 app_thread.start()
 
+time.sleep(5)  # Wait for the web server to start
 
 # main loop
 ADC1 = ADC.ADS1263('GAIN_1', '14400SPS')
