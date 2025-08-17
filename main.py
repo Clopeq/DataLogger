@@ -14,10 +14,17 @@ loader = QUiLoader()
 window = loader.load(ui_file)
 ui_file.close()
 
+
+
+
+button = window.findChild(type(window), "pushButton")
+
+def onClick():
+    print("Button clicked!")
+
+button.clicked.connect(onClick)
+
+
 # Show the window
 window.show()
 app.exec()
-
-
-print("foo")
-
