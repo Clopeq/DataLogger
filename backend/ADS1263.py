@@ -168,11 +168,12 @@ CMD = {
 }
 
 class ADS1263:
-    def __init__(self, gain='GAIN_1', rate='14400SPS', Mode=0):
+    def __init__(self, gain='GAIN_1', rate='14400SPS', ref=5.0, Mode=0):
         self.rst_pin = config.RST_PIN
         self.cs_pin = config.CS_PIN
         self.drdy_pin = config.DRDY_PIN
         self.ScanMode = 0 # 0 is signeChnnel, 1 is diffChannel
+        self.REF = ref # Reference voltage, modify according to actual voltage
 
         self.init_ADC1(gain, rate)
 
@@ -292,10 +293,10 @@ class ADS1263:
             
 
     # Set ADC1 Measuring channel
-    def SetChannal(self, Channal):
-        if Channal > 10:
+    def SetChannel(self, channel):
+        if channel > 10:
             return 0
-        INPMUX = (Channal << 4) | 0x0a
+        INPMUX = (channel << 4) | 0x0a
         self.WriteReg(REG['REG_INPMUX'], INPMUX)
         if(self.ReadData(REG['REG_INPMUX'])[0] == INPMUX):
             # print("REG_INPMUX success")
@@ -305,10 +306,10 @@ class ADS1263:
 
 
     # Set ADC2 Measuring channel
-    def SetChannal_ADC2(self, Channal):
-        if Channal > 10:
+    def SetChannel_ADC2(self, channel):
+        if channel > 10:
             return 0
-        INPMUX = (Channal << 4) | 0x0a
+        INPMUX = (channel << 4) | 0x0a
         self.WriteReg(REG['REG_ADC2MUX'], INPMUX)
         if(self.ReadData(REG['REG_ADC2MUX'])[0] == INPMUX):
             # print("REG_ADC2MUX success")
@@ -318,17 +319,17 @@ class ADS1263:
             
 
     # Set ADC1 Measuring differential channel
-    def SetDiffChannal(self, Channal):
-        if Channal == 0:
-            INPMUX = (0<<4) | 1     #DiffChannal    AIN0-AIN1
-        elif Channal == 1:
-            INPMUX = (2<<4) | 3     #DiffChannal    AIN2-AIN3
-        elif Channal == 2:
-            INPMUX = (4<<4) | 5     #DiffChannal    AIN4-AIN5
-        elif Channal == 3:
-            INPMUX = (6<<4) | 7     #DiffChannal    AIN6-AIN7
-        elif Channal == 4:
-            INPMUX = (8<<4) | 9     #DiffChannal    AIN8-AIN9
+    def SetDiffchannel(self, channel):
+        if channel == 0:
+            INPMUX = (0<<4) | 1     #Diffchannel    AIN0-AIN1
+        elif channel == 1:
+            INPMUX = (2<<4) | 3     #Diffchannel    AIN2-AIN3
+        elif channel == 2:
+            INPMUX = (4<<4) | 5     #Diffchannel    AIN4-AIN5
+        elif channel == 3:
+            INPMUX = (6<<4) | 7     #Diffchannel    AIN6-AIN7
+        elif channel == 4:
+            INPMUX = (8<<4) | 9     #Diffchannel    AIN8-AIN9
         self.WriteReg(REG['REG_INPMUX'], INPMUX)
         if(self.ReadData(REG['REG_INPMUX'])[0] == INPMUX):
             # print("REG_INPMUX success")
@@ -338,17 +339,17 @@ class ADS1263:
             
 
     # Set ADC2 Measuring differential channel
-    def SetDiffChannal_ADC2(self, Channal):
-        if Channal == 0:
-            INPMUX = (0<<4) | 1     #DiffChannal    AIN0-AIN1
-        elif Channal == 1:
-            INPMUX = (2<<4) | 3     #DiffChannal    AIN2-AIN3
-        elif Channal == 2:
-            INPMUX = (4<<4) | 5     #DiffChannal    AIN4-AIN5
-        elif Channal == 3:
-            INPMUX = (6<<4) | 7     #DiffChannal    AIN6-AIN7
-        elif Channal == 4:
-            INPMUX = (8<<4) | 9     #DiffChannal    AIN8-AIN9
+    def SetDiffchannel_ADC2(self, channel):
+        if channel == 0:
+            INPMUX = (0<<4) | 1     #Diffchannel    AIN0-AIN1
+        elif channel == 1:
+            INPMUX = (2<<4) | 3     #Diffchannel    AIN2-AIN3
+        elif channel == 2:
+            INPMUX = (4<<4) | 5     #Diffchannel    AIN4-AIN5
+        elif channel == 3:
+            INPMUX = (6<<4) | 7     #Diffchannel    AIN6-AIN7
+        elif channel == 4:
+            INPMUX = (8<<4) | 9     #Diffchannel    AIN8-AIN9
         self.WriteReg(REG['REG_ADC2MUX'], INPMUX)
         if(self.ReadData(REG['REG_ADC2MUX'])[0] == INPMUX):
             # print("REG_ADC2MUX success")
@@ -432,31 +433,31 @@ class ADS1263:
         
         
     # Read ADC1 specified channel data
-    def GetChannalValue(self, Channel):
+    def GetChannelValue(self, Channel):
         if(self.ScanMode == 0):# 0  Single-ended input 10 channel Differential input 5 channel 
             if(Channel>10):
                 print("The number of channels must be less than 10")
                 return 0
-            self.SetChannal(Channel)
+            self.SetChannel(Channel)
             self.WaitDRDY()
             Value = self.Read_ADC_Data()
         else:
             if(Channel>4):
                 print("The number of channels must be less than 5")
                 return 0
-            self.SetDiffChannal(Channel)
+            self.SetDiffchannel(Channel)
             self.WaitDRDY()
             Value = self.Read_ADC_Data()
         return Value
 
 
     # Read ADC2 specified channel data
-    def GetChannalValue_ADC2(self, Channel):
+    def GetChannelValue_ADC2(self, Channel):
         if(self.ScanMode == 0):# 0  Single-ended input 10 channel Differential input 5 channel
             if(Channel>10):
                 print("The number of channels must be less than 10")
                 return 0
-            self.SetChannal_ADC2(Channel)
+            self.SetChannel_ADC2(Channel)
             # config.delay_ms(2)
             self.WriteCmd(CMD['CMD_START2'])
             # config.delay_ms(2)
@@ -465,25 +466,37 @@ class ADS1263:
             if(Channel>4):
                 print("The number of channels must be less than 5")
                 return 0
-            self.SetDiffChannal_ADC2(Channel)
+            self.SetDiffchannel_ADC2(Channel)
             # config.delay_ms(2) 
             self.WriteCmd(CMD['CMD_START2'])
             # config.delay_ms(2) 
             Value = self.Read_AD2C_Data()
         return Value
         
+    def read(self, channel, ref=None):
+        if ref is None:
+            ref = self.REF
+        
+        raw_value = self.GetChannelValue(channel)
+        return (ref*2 - raw_value * ref / 0x80000000)
+        
+    def read2(self, channel, ref=None):
+        if ref is None:
+            ref = self.REF
+        raw_value = self.GetChannelValue(channel)
+        return (ref*2 - raw_value * ref / 0x80000000)
 
     def GetAll(self, List):
         ADC_Value = []
         for i in List:
-            ADC_Value.append(self.GetChannalValue(i))
+            ADC_Value.append(self.GetChannelValue(i))
         return ADC_Value
           
           
     def GetAll_ADC2(self):
         ADC_Value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in range(0, 10, 1):
-            ADC_Value[i] = self.GetChannalValue_ADC2(i)
+            ADC_Value[i] = self.GetChannelValue_ADC2(i)
             self.WriteCmd(CMD['CMD_STOP2'])
             config.delay_ms(20) 
         return ADC_Value
