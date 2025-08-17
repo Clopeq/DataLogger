@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+# WARNING: THIS CODE USES OLD CODE STRUCTURE AND THUS WILL NOT WORK
+
 import time
 import ADS1263
 import RPi.GPIO as GPIO
