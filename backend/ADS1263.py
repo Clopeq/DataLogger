@@ -479,7 +479,8 @@ class ADS1263:
 
         result = -1
         raw_value = self.GetChannelValue(channel)
-        if(raw_value>>31 ==1):
+
+        if(raw_value>>31 == 1):
             result = -(ref*2 - raw_value * ref / 0x80000000)
         else:
             result = raw_value * ref / 0x7fffffff # 32bit
@@ -489,8 +490,16 @@ class ADS1263:
     def read2(self, channel, ref=None):
         if ref is None:
             ref = self.REF
+
+        result = -1
         raw_value = self.GetChannelValue(channel)
-        return (ref*2 - raw_value * ref / 0x80000000)
+        
+        if(raw_value>>23 == 1):
+            result = -(ref*2 - raw_value * ref / 0x800000)
+        else:
+            result = raw_value * ref / 0x7fffff # 24bit
+
+        return result
 
     def GetAll(self, List):
         ADC_Value = []
