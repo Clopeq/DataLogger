@@ -27,7 +27,7 @@
 # THE SOFTWARE.
 #
 
-import config
+import backend.config as config
 import RPi.GPIO as GPIO
 
 # gain
