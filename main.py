@@ -19,3 +19,5 @@ window.show()
 app.exec()
 
 
+print("foo")
+
