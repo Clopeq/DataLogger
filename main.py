@@ -11,7 +11,7 @@ eel.init('app')
 
 def web_server():
     print("Starting the browser...")
-    os.popen('netsurf http://DAQ:'+PORT)
+    os.popen('netsurf http://DAQ:'+str(PORT))
     print("Starting the application...")
     eel.start('index.html', size=(1024,600), mode=None, host="0.0.0.0", port=PORT)
 
@@ -20,7 +20,7 @@ app_thread = threading.Thread(target=web_server)
 app_thread.daemon = True
 app_thread.start()
 
-time.sleep(5)  # Wait for the web server to start
+time.sleep(1)  # Wait for the web server to start
 
 # main loop
 ADC1 = ADC.ADS1263('GAIN_1', '14400SPS')
