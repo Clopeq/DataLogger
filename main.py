@@ -1,25 +1,19 @@
-
 import backend.ADS1263 as ADC
 import time
 import eel
 import os
 import threading
 
-DEV_MODE = False
 PORT = 8000
 
 eel.init('app')
 
-if DEV_MODE:
-    mode=None
-else:
-    mode="netsurf"
 
 def web_server():
     print("Starting the browser...")
     os.popen('netsurf http://DAQ:'+PORT)
     print("Starting the application...")
-    eel.start('index.html', size=(1024,600), mode=mode, host="0.0.0.0", port=PORT)
+    eel.start('index.html', size=(1024,600), mode=None, host="0.0.0.0", port=PORT)
 
 # Run ADC loop in a separate thread
 app_thread = threading.Thread(target=web_server)
