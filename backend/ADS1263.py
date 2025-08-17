@@ -476,9 +476,15 @@ class ADS1263:
     def read(self, channel, ref=None):
         if ref is None:
             ref = self.REF
-        
+
+        result = -1
         raw_value = self.GetChannelValue(channel)
-        return (ref*2 - raw_value * ref / 0x80000000)
+        if(raw_value>>31 ==1):
+            result = -(ref*2 - raw_value * ref / 0x80000000)
+        else:
+            result = raw_value * ref / 0x7fffffff # 32bit
+
+        return result
         
     def read2(self, channel, ref=None):
         if ref is None:
