@@ -1,31 +1,21 @@
-import backend.ADS1263 as ADC
-import time
-import eel
-import os
-import threading
-
-PORT = 8000
-
-eel.init('app')
+from PySide6.QtWidgets import QApplication
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QFile
 
 
-def web_server():
-    print("Starting the browser...")
-    os.popen('netsurf http://DAQ:'+str(PORT))
-    print("Starting the application...")
-    eel.start('index.html', size=(1024,600), mode=None, host="0.0.0.0", port=PORT)
+app = QApplication([])
 
-# Run ADC loop in a separate thread
-app_thread = threading.Thread(target=web_server)
-app_thread.daemon = True
-app_thread.start()
+# open the .ui file
+ui_file = QFile("app/app.ui")
+ui_file.open(QFile.ReadOnly)
 
-time.sleep(1)  # Wait for the web server to start
+# Load the UI
+loader = QUiLoader()
+window = loader.load(ui_file)
+ui_file.close()
 
-# main loop
-ADC1 = ADC.ADS1263('GAIN_1', '14400SPS')
+# Show the window
+window.show()
+app.exec()
 
-while True:
-    print("\033[H\033[J", end="")  # console clear
-    print("A0: %f" % ADC1.read(0))
-    time.sleep(0.01)
+
