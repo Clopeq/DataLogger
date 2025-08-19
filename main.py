@@ -6,9 +6,12 @@ from threads import *
 from threading import Thread
 from queue import Queue
 import sys
+from threading import Lock
 
 
 
+
+# UI init
 app = QApplication([])
 
 # open the .ui file
@@ -29,12 +32,13 @@ label = window.findChild(QLabel, "label")
 lineEdit = window.findChild(QLineEdit, "lineEdit")
 
 
-max = 50
-work = Queue()
-finished = Queue()
+# Threading init
+sensorData = Queue(maxsize=3) # ADC, ID, time
+sensorQueue = Queue()
+commQueue = Queue()
 
-producer_thread = Thread(target=DummyProducer, args=[work, finished, max], daemon=True)
-consumer_thread = Thread(target=Consumer, args=[work, finished, label], daemon=True)
+producer_thread = Thread(target=DummyProducer, args=(sensorData, sensorQueue, commQueue), daemon=True)
+consumer_thread = Thread(target=UIconsumer, args=(sensorData, label), daemon=True)
 
 producer_thread.start()
 consumer_thread.start()

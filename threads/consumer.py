@@ -1,19 +1,28 @@
 from utilities import display
 import time
 
-def Consumer(queue, finished, label):
-    counter = 0
+def UIconsumer(sensorData, label):
+    """
+    Updates the label with the first ADC value from the data dictionary if available, otherwise displays 'No data'.
+
+    Parameters:
+        data (dict): Dictionary containing ADC data under the 'ADC' key.
+        label: UI label object with a setText(str) method.
+    """
+
+    data = {}
+
     while True:
-        if not queue.empty():
-            v = queue.get()
-            display(f"Consuming {counter}: {v}")
-            label.setText(str(v))
-            counter += 1
-            time.sleep(0.1)
+
+        if not sensorData.empty():
+            data = sensorData.get()
         else:
-            if not finished.empty():
-                q = finished.get()
-                if q is True:
-                    break
-        
-    display("Consumer finished!")
+            continue
+
+        try:
+            label.setText(str(data["ID"]) + " " + str(data["time"]))
+        except:
+            print("UI consumer: No data")
+            label.setText("No data")
+
+        time.sleep(0.1)
