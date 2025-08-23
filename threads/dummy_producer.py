@@ -26,14 +26,17 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
     t2 = time()
     productionRate = 5* 10**4
 
-    ADC = [0]*10
+    if platform.system() == 'Linux':
+        channels = np.arange(10)
+        ADC = ADS1263.ADS1263('GAIN_1', '14400SPS', ref=5.03)
 
 
     while True:
         
         # generate dummy data
         if platform.system() == 'Linux':
-            pass
+            for ch in channels:
+                dataHolder["A"+str(ch)] = ADC.read(ch)
         else:
             for i in range(10): # generate dummy ADC data
                 dataHolder["A"+str(i)] = randint(0, 1023)

@@ -1,4 +1,4 @@
-import platform
+import numpy as np
 
-print(platform.system())
+print(np.arange(10))
 
