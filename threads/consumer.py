@@ -31,7 +31,7 @@ def UIconsumer(sensorData: Queue, window, comm: Queue, producerCMD: Queue):
         print("Error: 'tare_button' not found in the UI.")
 
     if calibrate_button is not None:
-        calibrate_button.clicked.connect(lambda: calibrateClick(producerCMD, actual_value_box))
+        calibrate_button.clicked.connect(lambda: calibrateClick(producerCMD, actual_value_box.text()))
     else:
         print("Error: 'tare_button' not found in the UI.")
 
