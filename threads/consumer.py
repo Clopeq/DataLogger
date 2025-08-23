@@ -24,7 +24,7 @@ def UIconsumer(sensorData: Queue, label, comm: Queue):
             continue # no new data available
 
         try: 
-            label.setText(str(data["ID"]) + " " + str(data["time"]))
+            label.setText(str(data["A0"]) + " " + str(data["ID"]) + " " + str(data["time"]))
         except:     # if there is no data being collected at the initialization the try block will produce an error
             print("UI consumer: No data")
             label.setText("No data")
