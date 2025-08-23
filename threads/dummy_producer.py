@@ -1,10 +1,13 @@
 from utilities import display
 from random import randint
-from time import time
+from timeit import default_timer as time
+from queue import Queue
+import numpy as np
+import copy
 
 import threading
 
-def DummyProducer(uiQueue, saveQueue, comm):
+def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
     """
         Producer which generates random data for testing on PC.
 
@@ -17,6 +20,8 @@ def DummyProducer(uiQueue, saveQueue, comm):
     dataHolder = {}
     dataID = 0
     t = time()
+    t2 = time()
+    productionRate = 5* 10**4
 
     ADC = [0]*10
 
@@ -24,27 +29,47 @@ def DummyProducer(uiQueue, saveQueue, comm):
     while True:
         
         # generate dummy data
-        for i in range(10):
-            ADC[i] = randint(0, 100)
-
+        for i in range(10): # generate dummy ADC data
+            dataHolder["A"+str(i)] = randint(0, 1023)
         dataHolder["time"] = time()-t  # timestamp in seconds  
         dataHolder["ID"] = dataID
-        dataHolder["ADC"] = ADC
+        
 
         # handle the UI queue
-        if not uiQueue.full():
-            uiQueue.put_nowait(dataHolder)
+        if not uiQueue.full(): # if full then make some space and then put
+            uiQueue.put_nowait(dict(dataHolder))
         else:
-            uiQueue.get_nowait()  # remove oldest data if queue is full
+            try:
+                if not uiQueue.empty(): # consumer is constantly consuming data so the state of uiQueue changes constantly
+                    uiQueue.get_nowait()  # remove oldest data if queue is full
+            except:
+                pass # due to consumer existance the uiQueue.get_nowait() frequently produces an error
             uiQueue.put_nowait(dataHolder)
 
-        # handle the saving queue
-        if not saveQueue.full():
-            saveQueue.put_nowait(dataHolder)
+        # handle the writer queue
+        if not writerQueue.full():
+            writerQueue.put_nowait(dict(dataHolder))
         else:
-            saveQueue.get_nowait()
-            saveQueue.put_nowait(dataHolder) 
+            try:
+                writerQueue.get_nowait()
+            except:
+                pass
+            writerQueue.put_nowait(dict(dataHolder)) 
 
         dataID += 1
-        while time()-t < 1/50000:
-            pass
+
+        # evaluate the CMD
+        while True: # do while
+            if not comm.empty():
+                cmd = comm.get()
+
+                if cmd == "EXIT":
+                    print("producer Exit")
+                    return
+
+            if time()-t2 > 1/productionRate:
+                break
+        t2 = time()
+        
+
+        

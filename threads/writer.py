@@ -1,47 +1,171 @@
 import time
 import h5py
+import queue as Queue
+import os
+import copy
+from timeit import default_timer as time
+
+def dset_append(dataset, data: list):
+    """
+        appends a list to 1D dataset
+    """
+
+    expanded_dataset = dataset
+    if type(data) != list:
+        lst = [data]
+    else:
+        lst = data
+
+    # TODO: Check the shape of the dataset
+    # TODO: Check the shape of the list
+
+    size = expanded_dataset.size
+    expanded_dataset.resize( (size+len(lst),) )
+    expanded_dataset[size: (size+len(lst))] = lst
+
+    return expanded_dataset
 
 
 # ID - i8
 # time - f8
 # ADC - f4[10]
 
-def wirter_consumer(sensorQueue, comm):
+def init_file():
+    # initilize the write file
+    file = None
+    fileID = 0
+    try: # create output folder if does not exist
+        os.makedirs("output")
+    except:
+        pass
+
+    while True:
+        try: # will generate the error until the new filename is reached
+            filename = "output/data_" + str(fileID) + ".h5"
+            file = h5py.File(filename, "w-")
+            break
+        except:
+            try: # close any previously opened file if any
+                file.close()
+            except:
+                pass
+
+            if fileID < 100: # limit the maximum files which can be saved on a hard drive
+                fileID += 1
+            else:
+                print("Error creating file - writer")
+                file = None
+                return file
+    return file
+
+def foo(name, object):
+    print("Name: ", name, " | Object: ", object)
+
+def writer_consumer(sensorQueue: Queue, comm: Queue):
 
     DATA_WRITE = False
+    file = None
+    batchsize = 1000
+    datasets = []
+    batchdata = []
+    cmd = None
+    data = []
+    write_frequency = None
+    production_frequency = None
+    data_step = 1
+    que_treshold_size = 1000
+
+
+
 
 
     while True:
+
         if not comm.empty(): # if there is a cmd message, read it
+            print("CMD received!")
             cmd = comm.get()
         
         # interpret the cmd
         if cmd == "DATA_WRITE": # begin writing to the hard drive
+            cmd = None
             DATA_WRITE = True
+            file = init_file()
 
-            # initilize the write file
-            now = time.localtime()
-            filename = "output/data_" + time.strftime("%Y%M%D_%H%M%S", now) + ".h5"
-            file = h5py.File(filename, "a")
-
-        elif cmd == "DATA_STOP":
-            DATA_WRITE = False
-
-        if DATA_WRITE and not sensorQueue.empty():
+            if file == None:
+                print("failed to open file")
+                return
+            
+            datasets = []     # initialize datasets
             try:
-                data = sensorQueue.get(timeout=0.5)
-            except Exception:
+                receivedData = sensorQueue.get(timeout=1)
+            except:
+                print("Writer: Failed to read data")
                 continue
 
-            if 'file' in locals() and file is not None:
-                for key, value in data.items():
-                    if key not in file:
-                        maxsize = (None,) + value.shape[1:]
-                        file.create_dataset(key, data=value, maxshape=maxsize, chunks=True)
-                    else:
-                        dset = file[key]
-                        old_size = dset.shape[0]
-                        new_size = old_size + value.shape[0]
-                        dset.resize((new_size,) + dset.shape[1:])
-                        dset[old_size:new_size] = value
-                    dset[old_size:new_size] = value
+            data = {}
+            for item in receivedData.items():
+                data[item[0]] = [item[1]]
+
+            for item in data.items():
+                datasets.append(file.create_dataset(str(item[0]), maxshape=(None,), data = item[1]))
+            write_freq_dataset = file.create_dataset("WRITE_FREQUENCY", maxshape=(None,), data = [0])
+            production_freq_dataset = file.create_dataset("PRODUCTION_FREQUENCY", maxshape=(None,), data = [0])
+                
+
+        elif cmd == "DATA_STOP":
+            cmd = None
+            DATA_WRITE = False
+            file = None
+            try:
+                file.flush()
+                file.close()
+            except:
+                print("Error: Failed to close file.")
+            finally:
+                return
+        
+        elif cmd == "EXIT":
+            print("Writer exit")
+            try:
+                file.flush()
+                file.close()
+                file = None
+            finally:
+                return
+
+        if DATA_WRITE and not sensorQueue.empty() and not file == None:
+            t = time()
+            last_que_size = sensorQueue.qsize()
+            while len(batchdata) < batchsize and time()-t < 1:
+                try:
+                    for i in range(data_step):
+                        data = sensorQueue.get(timeout=1)
+                except Exception as e:
+                    print(e)
+                    continue
+                batchdata.append(list(data.values()))
+            batchsize = len(batchdata)
+
+            i = 0
+            for dset in datasets:
+                dset = dset_append(dset, [item[i] for item in batchdata])
+                i += 1
+
+            que_size = sensorQueue.qsize()
+            write_frequency = batchsize/(time()-t)
+            production_frequency = (que_size-last_que_size + batchsize*data_step)/(time()-t)
+
+            # If producer is way faster than the consumer and if the que size is becoming large start skipping data
+            if que_size > que_treshold_size:
+                data_step = int((que_size-que_treshold_size) // 10e2)
+                if data_step < 1:
+                    data_step = 1
+                
+
+            write_freq_dataset = dset_append(write_freq_dataset, write_frequency)
+            production_freq_dataset = dset_append(production_freq_dataset, production_frequency)
+            batchdata = []
+            print("Queue size: ", que_size)
+            print("Queue skiprate: ", data_step)
+
+            

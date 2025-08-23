@@ -1,17 +1,10 @@
-from queue import Queue
+import numpy as np
 
 
-q = Queue(maxsize=3)
+lst = [0]*10
 
-max = 10
+print(lst)
 
-for i in range(10):
-    if not q.full():
-        q.put(i)
-    else:
-        q.get()
-        q.put(i)
+for i in lst:
+    print(i)
 
-for i in range(q.maxsize):
-    if not q.empty():
-        print(q.get())
