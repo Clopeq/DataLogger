@@ -36,7 +36,7 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
         # generate dummy data
         if platform.system() == 'Linux':
             for ch in channels:
-                dataHolder["A"+str(ch)] = ADC.read(int(ch))
+                dataHolder["A"+str(ch)[:5]] = ADC.read(int(ch))
         else:
             for i in range(10): # generate dummy ADC data
                 dataHolder["A"+str(i)] = randint(0, 1023)
