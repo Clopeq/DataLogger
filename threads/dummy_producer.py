@@ -79,6 +79,9 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
                 if platform.system() == 'Linux':
                     if cmd == "TARE":
                         ADC.tare(0)
+                    if "CALIBRATE" in cmd:
+                        msg = float(cmd[9:])
+                        ADC.calibrate(0, msg)
 
             if time()-t2 > 1/productionRate:
                 break

@@ -22,11 +22,18 @@ def UIconsumer(sensorData: Queue, window, comm: Queue, producerCMD: Queue):
 
     tare_button = window.findChild(QPushButton, "tareButton")
     title_label = window.findChild(QLabel, "titleLabel")
+    calibrate_button = window.findChild(QPushButton, "calibrateButton")
+    actual_value_box = window.findChild(QLineEdit, "actualValue")
 
     if tare_button is not None:
         tare_button.clicked.connect(lambda: tareClick(producerCMD))
     else:
-        print("Error: 'pushButton' not found in the UI.")
+        print("Error: 'tare_button' not found in the UI.")
+
+    if calibrate_button is not None:
+        calibrate_button.clicked.connect(lambda: calibrateClick(producerCMD, actual_value_box))
+    else:
+        print("Error: 'tare_button' not found in the UI.")
 
     while True:
 

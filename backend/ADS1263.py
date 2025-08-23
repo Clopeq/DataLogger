@@ -175,7 +175,8 @@ class ADS1263:
         self.ScanMode = 0 # 0 is signeChnnel, 1 is diffChannel
         self.REF = ref # Reference voltage, modify according to actual voltage
 
-        self.tareValue = 0
+        self.tareValue = [0 for i in range(10)]
+        self.cal_factor = [1 for i in range(10)]
 
         self.init_ADC1(gain, rate)
 
@@ -486,12 +487,17 @@ class ADS1263:
         else:
             result = raw_value * ref / 0x7fffffff # 32bit
 
-        return result + self.tareValue
+        return self.cal_factor[channel] * (result + self.tareValue[channel])
         
     def tare(self, channel, value = 0):
-        self.tareValue = 0
-        self.tareValue = -(self.read(channel))+value
-        return self.tareValue
+        self.tareValue[channel] = 0
+        self.tareValue[channel] = -(self.read(channel))+value
+        return self.tareValue[channel]
+    
+    def calibrate(self, channel, actualValue):
+        self.cal_factor[channel] = 1
+        self.cal_factor[channel] = actualValue/self.read(channel)
+        return self.cal_factor[channel]
 
     def setRef(self, ref):
         self.REF = ref
