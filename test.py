@@ -1,4 +1,6 @@
 import numpy as np
 
-print(np.arange(10))
+chaannels = np.arange(10)
 
+for ch in chaannels:
+    print(type(int(ch)))
