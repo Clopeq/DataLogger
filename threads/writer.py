@@ -1,6 +1,6 @@
 import time
 import h5py
-import queue as Queue
+import multiprocessing as Queue
 import os
 import copy
 from timeit import default_timer as time
@@ -25,6 +25,20 @@ def dset_append(dataset, data: list):
 
     return expanded_dataset
 
+def dset_write(dataset, data, index, resize_amount=10e6):
+
+    dset = dataset
+    size = dset.size
+
+    if type(data) != list:
+        data = [data]
+
+    if size - index < len(data):
+        dset.resize( (size+resize_amount,) )
+    
+    dset[index:index+len(data)] = data
+
+    return dset
 
 # ID - i8
 # time - f8
@@ -73,7 +87,12 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
     write_frequency = None
     production_frequency = None
     data_step = 1
-    que_treshold_size = 1000
+    que_treshold_size = 100000
+    write_index = 1
+    freq_index = 1
+    initial_data_size = 1e7
+    initial_freq_size = 1e3
+    data_step_rate = 2e3
 
 
 
@@ -107,9 +126,12 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
                 data[item[0]] = [item[1]]
 
             for item in data.items():
-                datasets.append(file.create_dataset(str(item[0]), maxshape=(None,), data = item[1]))
-            write_freq_dataset = file.create_dataset("WRITE_FREQUENCY", maxshape=(None,), data = [0])
-            production_freq_dataset = file.create_dataset("PRODUCTION_FREQUENCY", maxshape=(None,), data = [0])
+                datasets.append(file.create_dataset(str(item[0]),(initial_data_size,), maxshape=(None,), compression="lzf"))
+                
+            write_freq_dataset = file.create_dataset("WRITE_FREQUENCY",(initial_freq_size,), maxshape=(None,))
+            production_freq_dataset = file.create_dataset("PRODUCTION_FREQUENCY",(initial_freq_size,), maxshape=(None,))
+
+
                 
 
         elif cmd == "DATA_STOP":
@@ -136,7 +158,7 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
         if DATA_WRITE and not sensorQueue.empty() and not file == None:
             t = time()
             last_que_size = sensorQueue.qsize()
-            while len(batchdata) < batchsize and time()-t < 1:
+            while  time()-t < 1: #len(batchdata) < batchsize and
                 try:
                     for i in range(data_step):
                         data = sensorQueue.get(timeout=1)
@@ -148,8 +170,10 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
 
             i = 0
             for dset in datasets:
-                dset = dset_append(dset, [item[i] for item in batchdata])
+                dset = dset_write(dset, [item[i] for item in batchdata], write_index, initial_data_size)
                 i += 1
+
+
 
             que_size = sensorQueue.qsize()
             write_frequency = batchsize/(time()-t)
@@ -157,13 +181,17 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
 
             # If producer is way faster than the consumer and if the que size is becoming large start skipping data
             if que_size > que_treshold_size:
-                data_step = int((que_size-que_treshold_size) // 10e2)
+                data_step = int((que_size-que_treshold_size) // data_step_rate)
                 if data_step < 1:
                     data_step = 1
                 
 
-            write_freq_dataset = dset_append(write_freq_dataset, write_frequency)
-            production_freq_dataset = dset_append(production_freq_dataset, production_frequency)
+            write_freq_dataset = dset_write(write_freq_dataset, write_frequency, freq_index, initial_freq_size)
+            production_freq_dataset = dset_write(production_freq_dataset, production_frequency,freq_index, initial_freq_size)
+
+            write_index += batchsize
+            freq_index += 1
+
             batchdata = []
             print("Queue size: ", que_size)
             print("Queue skiprate: ", data_step)
