@@ -39,7 +39,7 @@ uiCMD = Queue(maxsize=10)
 writerCMD = Queue(maxsize=10)
 
 producer_thread = Thread(target=DummyProducer, args=(uiQueue, writerQueue, producerCMD), daemon=True)
-consumer_thread = Thread(target=UIconsumer, args=(uiQueue, window, uiCMD), daemon=True)
+consumer_thread = Thread(target=UIconsumer, args=(uiQueue, window, uiCMD, producerCMD), daemon=True)
 writer_thread = Thread(target=writer_consumer, args=(writerQueue, writerCMD))
 
 producer_thread.start()
