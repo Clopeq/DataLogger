@@ -497,8 +497,8 @@ class ADS1263:
         return self.tareValue[channel]
     
     def calibrate(self, channel, actualValue):
-        self.cal_factor[channel] = actualValue/self.read(channel, True)
-        self.tareValue[channel] = 0
+        self.cal_factor[channel] = 1
+        self.cal_factor[channel] = actualValue/self.read(channel)
         return self.cal_factor[channel]
 
     def setRef(self, ref):
