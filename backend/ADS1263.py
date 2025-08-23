@@ -175,6 +175,8 @@ class ADS1263:
         self.ScanMode = 0 # 0 is signeChnnel, 1 is diffChannel
         self.REF = ref # Reference voltage, modify according to actual voltage
 
+        self.tareValue = 0
+
         self.init_ADC1(gain, rate)
 
         
@@ -473,9 +475,8 @@ class ADS1263:
             Value = self.Read_AD2C_Data()
         return Value
         
-    def read(self, channel, ref=None):
-        if ref is None:
-            ref = self.REF
+    def read(self, channel):
+        ref = self.REF
 
         result = -1
         raw_value = self.GetChannelValue(channel)
@@ -485,8 +486,16 @@ class ADS1263:
         else:
             result = raw_value * ref / 0x7fffffff # 32bit
 
-        return result
+        return result + self.tare
         
+    def tare(self, channel, value = 0):
+        self.tareValue = -(self.read(channel))+value
+        return self.tareValue
+
+    def setRef(self, ref):
+        self.REF = ref
+        return self.REF
+
     def read2(self, channel, ref=None):
         if ref is None:
             ref = self.REF

@@ -14,40 +14,214 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="testButton">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>360</y>
-      <width>161</width>
+      <x>180</x>
+      <y>320</y>
+      <width>471</width>
       <height>81</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>48</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Test!</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="titleLabel">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>-20</y>
+      <width>701</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>72</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Thrust</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="actualValue">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>430</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>100</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="tareButton">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>480</y>
+      <width>201</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Tare</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calibrateButton">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>480</y>
+      <width>261</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Calibrate</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>168</x>
+      <y>405</y>
+      <width>231</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>28</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Actual value:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="testDuration">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>260</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>300</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>90</y>
-      <width>101</width>
-      <height>71</height>
+      <x>90</x>
+      <y>260</y>
+      <width>171</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Test duration:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>280</y>
-      <width>441</width>
+      <x>400</x>
+      <y>260</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Countdown:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="countdown">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>260</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>10</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="peakThrustLabel">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>180</y>
+      <width>181</width>
       <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Peak: 0 N</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

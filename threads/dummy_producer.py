@@ -75,6 +75,10 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
                 if cmd == "EXIT":
                     print("producer Exit")
                     return
+                
+                if platform.system() == 'Linux':
+                    if cmd == "TARE":
+                        ADC.tare(0)
 
             if time()-t2 > 1/productionRate:
                 break

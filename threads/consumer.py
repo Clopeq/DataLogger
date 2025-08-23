@@ -1,8 +1,12 @@
 from utilities import display
 from timeit import default_timer as time
 from queue import Queue
+from PySide6.QtWidgets import QApplication, QPushButton, QLabel, QLineEdit
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QFile, QObject, Signal
+from app import backend
 
-def UIconsumer(sensorData: Queue, label, comm: Queue):
+def UIconsumer(sensorData: Queue, window, comm: Queue):
     """
     Updates the label with the first ADC value from the data dictionary if available, otherwise displays 'No data'.
 
@@ -12,9 +16,17 @@ def UIconsumer(sensorData: Queue, label, comm: Queue):
     """
 
     data = {} # container for the queue data
-    refreshrate = 100 
+    refreshrate = 8 
     t = time()
     cmd = None
+
+    tare_button = window.findChild(QPushButton, "tareButton")
+    title_label = window.findChild(QLabel, "titleLabel")
+
+    if tare_button is not None:
+        tare_button.clicked.connect(lambda: tareClick(producerCMD))
+    else:
+        print("Error: 'pushButton' not found in the UI.")
 
     while True:
 
@@ -24,10 +36,10 @@ def UIconsumer(sensorData: Queue, label, comm: Queue):
             continue # no new data available
 
         try: 
-            label.setText(str(data["A0"]) + " " + str(data["ID"]) + " " + str(data["time"]))
+            title_label.setText(str(data["A0"]) + " N")
         except:     # if there is no data being collected at the initialization the try block will produce an error
             print("UI consumer: No data")
-            label.setText("No data")
+            title_label.setText("No data")
 
         
         while True: # do while to ensure the cmd communication protocol is being checked at least once
