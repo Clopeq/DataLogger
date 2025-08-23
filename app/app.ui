@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1024</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QPushButton" name="testButton">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>320</y>
-      <width>471</width>
-      <height>81</height>
+      <x>730</x>
+      <y>30</y>
+      <width>291</width>
+      <height>471</height>
      </rect>
     </property>
     <property name="font">
@@ -35,8 +35,8 @@
    <widget class="QLabel" name="titleLabel">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>-20</y>
+      <x>20</x>
+      <y>-10</y>
       <width>701</width>
       <height>201</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QLineEdit" name="actualValue">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>430</y>
+      <x>392</x>
+      <y>345</y>
       <width>271</width>
       <height>41</height>
      </rect>
@@ -74,8 +74,8 @@
    <widget class="QPushButton" name="tareButton">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>480</y>
+      <x>182</x>
+      <y>395</y>
       <width>201</width>
       <height>71</height>
      </rect>
@@ -92,8 +92,8 @@
    <widget class="QPushButton" name="calibrateButton">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>480</y>
+      <x>402</x>
+      <y>395</y>
       <width>261</width>
       <height>71</height>
      </rect>
@@ -110,8 +110,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>168</x>
-      <y>405</y>
+      <x>180</x>
+      <y>320</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -206,8 +206,8 @@
    <widget class="QLabel" name="peakThrustLabel">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>180</y>
+      <x>280</x>
+      <y>170</y>
       <width>181</width>
       <height>51</height>
      </rect>
@@ -230,7 +230,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1024</width>
      <height>22</height>
     </rect>
    </property>
