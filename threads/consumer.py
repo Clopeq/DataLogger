@@ -6,7 +6,7 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, QObject, Signal
 from .UIutil import *
 
-def UIconsumer(sensorData: Queue, window, comm: Queue):
+def UIconsumer(sensorData: Queue, window, comm: Queue, producerCMD: Queue):
     """
     Updates the label with the first ADC value from the data dictionary if available, otherwise displays 'No data'.
 
