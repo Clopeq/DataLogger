@@ -476,7 +476,7 @@ class ADS1263:
             Value = self.Read_AD2C_Data()
         return Value
         
-    def read(self, channel):
+    def read(self, channel, raw=False):
         ref = self.REF
 
         result = -1
@@ -487,16 +487,17 @@ class ADS1263:
         else:
             result = raw_value * ref / 0x7fffffff # 32bit
 
-        return self.cal_factor[channel] * (result + self.tareValue[channel])
+        if raw:
+            return result
+        else:
+            return self.cal_factor[channel] * (result + self.tareValue[channel])
         
     def tare(self, channel, value = 0):
-        self.tareValue[channel] = 0
-        self.tareValue[channel] = -(self.read(channel))+value
+        self.tareValue[channel] = -self.read(channel, True)
         return self.tareValue[channel]
     
     def calibrate(self, channel, actualValue):
-        self.cal_factor[channel] = 1
-        self.cal_factor[channel] = actualValue/self.read(channel)
+        self.cal_factor[channel] = actualValue/self.read(channel, True)
         return self.cal_factor[channel]
 
     def setRef(self, ref):
