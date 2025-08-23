@@ -489,6 +489,7 @@ class ADS1263:
         return result + self.tareValue
         
     def tare(self, channel, value = 0):
+        self.tareValue = 0
         self.tareValue = -(self.read(channel))+value
         return self.tareValue
 
