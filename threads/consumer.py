@@ -4,7 +4,7 @@ from queue import Queue
 from PySide6.QtWidgets import QApplication, QPushButton, QLabel, QLineEdit
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, QObject, Signal
-import UIutil
+from UIutil import *
 
 def UIconsumer(sensorData: Queue, window, comm: Queue):
     """
