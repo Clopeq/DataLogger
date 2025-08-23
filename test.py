@@ -1,10 +1,4 @@
-import numpy as np
+import platform
 
-
-lst = [0]*10
-
-print(lst)
-
-for i in lst:
-    print(i)
+print(platform.system())
 

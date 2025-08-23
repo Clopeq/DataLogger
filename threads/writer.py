@@ -87,7 +87,7 @@ def writer_consumer(sensorQueue: Queue, comm: Queue):
     write_frequency = None
     production_frequency = None
     data_step = 1
-    que_treshold_size = 100000
+    que_treshold_size = 10000
     write_index = 1
     freq_index = 1
     initial_data_size = 1e7

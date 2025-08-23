@@ -4,8 +4,11 @@ from timeit import default_timer as time
 from queue import Queue
 import numpy as np
 import copy
-
+import platform
 import threading
+
+if platform.system() == 'Linux':
+    from backend import ADS1263
 
 def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
     """
@@ -29,8 +32,11 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
     while True:
         
         # generate dummy data
-        for i in range(10): # generate dummy ADC data
-            dataHolder["A"+str(i)] = randint(0, 1023)
+        if platform.system() == 'Linux':
+            pass
+        else:
+            for i in range(10): # generate dummy ADC data
+                dataHolder["A"+str(i)] = randint(0, 1023)
         dataHolder["time"] = time()-t  # timestamp in seconds  
         dataHolder["ID"] = dataID
         
