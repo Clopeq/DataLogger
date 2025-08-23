@@ -486,7 +486,7 @@ class ADS1263:
         else:
             result = raw_value * ref / 0x7fffffff # 32bit
 
-        return result + self.tare
+        return result + self.tareValue
         
     def tare(self, channel, value = 0):
         self.tareValue = -(self.read(channel))+value
