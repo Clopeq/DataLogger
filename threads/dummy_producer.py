@@ -76,6 +76,7 @@ def DummyProducer(uiQueue: Queue, writerQueue: Queue, comm: Queue):
                     print("producer Exit")
                     return
                 
+                
                 if platform.system() == 'Linux':
                     if cmd == "TARE":
                         ADC.tare(0)
